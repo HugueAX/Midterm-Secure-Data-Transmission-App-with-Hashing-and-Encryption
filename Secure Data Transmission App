@@ -1,0 +1,43 @@
+from cryptography.fernet import Fernet
+import hashlib
+import sys
+
+# convert user string to hash
+def hash_string(user_string):
+    return hashlib.sha256(user_string.encode('utf-8')).hexdigest()
+    
+
+def encryptHash(hashed_message):
+    # Generate key
+    key = Fernet.generate_key()
+
+    # Initialize key
+    cipher = Fernet(key)
+
+    # Encrypt message
+    message_bytes = hashed_message.encode("utf-8")
+    cipher_text = cipher.encrypt(message_bytes)
+    return cipher, cipher_text
+
+def decryptHash(encrypted_hashed_message):
+    # Decrypt the message
+    decrypted_bytes = cipher.decrypt(cipher_text)
+    decrypted_message = decrypted_bytes.decode('utf-8')
+    return decrypted_message
+
+def compareHashes(hashed_message, decrypted_hashed_message):
+    if (hashed_message === decrypted_hashed_message):
+        print("Message security verified by hash comparison.")
+    else:
+        print("Message failed verification.")
+
+message = input("Enter message to encrypt: ")
+hashed_message = hash_string(message)
+encrypted_hashed_message = encryptHash(hashed_message)
+decrypted_hashed_message = decryptHash(encrypted_hashed_message)
+compareHashes(hashed_message, decrypted_hashed_message)
+
+print(message)
+print(hashed_message)
+print(encrypted_hashed_message)
+print(decrypted_hashed_message)
